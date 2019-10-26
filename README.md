@@ -1,0 +1,20 @@
+# arXivデータ,PDFデータの取得解析
+### integration
+- 統合されたソースが格納
+- masterにはこのディレクトリのみマージ
+- 依存関係
+    - pandas
+    - arxiv
+    - requests
+### parts
+- arxiv
+    - arxivからのデータの取得
+    - 依存関係
+        - pandas
+        - arxiv
+- chart-extraction
+    - PDFからの文字列抽出
+- string-extraction
+    - PDFからの図表抽出
+- translation
+    - 翻訳
