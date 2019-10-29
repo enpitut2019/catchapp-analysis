@@ -1,4 +1,3 @@
-import codecs
 from googletrans import Translator
 translator = Translator()
 
