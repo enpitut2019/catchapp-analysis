@@ -19,7 +19,7 @@ l = arxiv.query(query='au:"Grisha Perelman"')
 
 print("\n著者:\n" + l[0]['author'])
 
-print("\nタイトル:\n" + translator.translate(l[0]['title'], src='en', dest='ja').text + '   (' + l[0]['title'] + ')')
+print("\nタイトル:\n" + translator.translate(l[0]['title'], src='en', dest='ja').text + '\n(' + l[0]['title'] + ')')
 
 print("\nサマリー:\n" + translator.translate(l[0]['summary'], src='en', dest='ja').text)
 
