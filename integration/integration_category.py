@@ -8,7 +8,9 @@ import pandas as pd
 from googletrans import Translator
 translator = Translator()
 
-p_list = arxiv.query(query='au:"Grisha Perelman"')
+# p_list = arxiv.query(query='au:"Grisha Perelman"')
+p_list = arxiv.query(query='au:"Henggang Cui"')
+
 
 num = len(p_list)
 
@@ -24,6 +26,8 @@ for i in p_list:
     
     print("\npublished:\n" + i['published'])
     print("\nauthor:\n" + i['author'])
+    # print("\nscheme:\n" + i['arxiv_primary_category']['scheme'])
+    print("\nterm:\n" + i['arxiv_primary_category']['term'])
     print("\nタイトル:\n" + translator.translate(i['title'], src='en', dest='ja').text + '\n(' + i['title'] + ')')
     print("\ntitle:\n" + i['title'])
     print("\narxiv_url:\n" + i['arxiv_url'])
