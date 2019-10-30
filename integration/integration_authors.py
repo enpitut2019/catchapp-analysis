@@ -12,7 +12,7 @@ translator = Translator()
 p_list = arxiv.query(query='au:"Henggang Cui"')
 
 
-num = len(p_list)
+# num = len(p_list)
 
 #print(type(l))
 
@@ -23,13 +23,14 @@ num = len(p_list)
 #pprint.pprint(l[0], width=200)
 
 for i in p_list:
-    
+    print("\n\n\n----------------------------------------------------------------------------------------------------")
+    print("\nタイトル:\n" + translator.translate(i['title'], src='en', dest='ja').text + '\n(' + i['title'] + ')')  
     print("\npublished:\n" + i['published'])
-    print("\nauthor:\n" + i['author'])
-    # print("\nscheme:\n" + i['arxiv_primary_category']['scheme'])
-    print("\nterm:\n" + i['arxiv_primary_category']['term'])
-    print("\nタイトル:\n" + translator.translate(i['title'], src='en', dest='ja').text + '\n(' + i['title'] + ')')
-    print("\ntitle:\n" + i['title'])
+    print("\nauthors:")
+    for j in i['authors']:
+        print(j + ",",end="")
+    # print("\n")
+    print("\n\nterm:\n" + i['arxiv_primary_category']['term'])
     print("\narxiv_url:\n" + i['arxiv_url'])
     print("\npdf_url:\n" + i['pdf_url'])
     print("\nsummary:\n" + i['summary'])
