@@ -21,9 +21,9 @@ print("\n著者:\n" + l[0]['author'])
 
 print("\nタイトル:\n" + translator.translate(l[0]['title'], src='en', dest='ja').text + '\n(' + l[0]['title'] + ')')
 
-print("\nサマリー:\n" + translator.translate(l[0]['summary'], src='en', dest='ja').text)
+print("\n要約:\n" + translator.translate(l[0]['summary'], src='en', dest='ja').text)
 
-print("\n原文:\n" + l[0]['summary'])
+print("\n要約の原文:\n" + l[0]['summary'])
 
 print("\narxiv_url:\n" + l[0]['arxiv_url'])
 
