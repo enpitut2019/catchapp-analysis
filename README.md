@@ -6,6 +6,7 @@
     - pandas
     - arxiv
     - requests
+    - googletrans
 ### parts
 - arxiv
     - arxivからのデータの取得
