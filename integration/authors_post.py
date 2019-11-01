@@ -23,7 +23,7 @@ p_list = arxiv.query(query='au:"Henggang Cui"')
 #pprint.pprint(l[0], width=200)
 
 for i in p_list:
-    response = requests.post("http://localhost:3000/papers/create/",data={'abstract': i['summary'],'abstract_ja':translator.translate(i['summary'], src='en', dest='ja').text ,'title':i['title'],'published_at':i['published'],'url':i['arxiv_url'],'pdf_url':i['pdf_url']})
+    response = requests.post("http://localhost:3000/papers/create/",data={'abstract': i['summary'],'abstract_ja':translator.translate(i['summary'], src='en', dest='ja').text ,'title':translator.translate(i['title'], src='en', dest='ja').text + '\n(' + i['title'] + ')','published_at':i['published'],'url':i['arxiv_url'],'pdf_url':i['pdf_url']})
     print(response.status_code)
     print(response.text)
     print("\n\n\n----------------------------------------------------------------------------------------------------")
