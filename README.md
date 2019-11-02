@@ -133,4 +133,28 @@ $ python3 parts/arxiv/arxiv_api.py
     |`<arxiv:affiliation>`|The author's affiliation included as a subelement of `<author>` if present.|
     |`<arxiv:journal_ref>`|A journal reference if present.|
     |`<arxiv:doi>`|A url for the resolved DOI to an external resource if present.|
+
+    - 要素にアクセスした結果をターミナルに出力しこのプログラムは終了している
     - 以上で`arxiv_api.py`の説明を終わる
+
+### Step.2 googletrans
+- 概要
+    - googleの機械翻訳機を使用するAPI
+    - 公式ではなくサードパーティーによる開発であり動作保証はない(公式は有料)
+    - 入力言語、出力言語、翻訳対象の文字列を指定することで翻訳結果の文字列を返す
+- 単体での実行
+    - /parts/translation内の`translation.py`でターミナルから入力された英文を日本語に翻訳可能
+```
+$ python3 parts/translation/translation.py
+```
+- コードの解説
+    - 該当のpythonファイルをエディターで開きながら見て欲しい
+    - コードの要点を説明していく
+    - ```import```によって googletrans をインポート
+    - ```translator = Translator()```で前処理(知らなくても使えるので説明を省く)
+    - 以下で入力文字列`intext`の翻訳結果を取得しターミナルに出力
+    ```
+    print(translator.translate(intext, src='en', dest='ja').text)
+    ```
+    - `src`で入力言語 `dest`で出力言語を指定している
+    - 以上で説明を終わる
