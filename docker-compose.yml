@@ -1,0 +1,6 @@
+version: "2"
+services:
+  pdfanalyzer:
+    image: sudame/pdfanalyzer
+    volumes:
+      - .:/app/python_scripts
