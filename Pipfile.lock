@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1e78af93a93151921e9fe0677ea7a33794ecfef00e53f61c978f61cd4681c982"
+            "sha256": "bfeff292871eab6c664ce9d20e97f2198259f3d68b95ad87bae98510a1f91b1d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -41,9 +41,16 @@
         "feedparser": {
             "hashes": [
                 "sha256:bd030652c2d08532c034c27fcd7c85868e7fa3cb2b17f230a44a6bbc92519bf9",
-                "sha256:cd2485472e41471632ed3029d44033ee420ad0b57111db95c240c9160a85831c"
+                "sha256:cd2485472e41471632ed3029d44033ee420ad0b57111db95c240c9160a85831c",
+                "sha256:ce875495c90ebd74b179855449040003a1beb40cd13d5f037a0654251e260b02"
             ],
             "version": "==5.2.1"
+        },
+        "get": {
+            "hashes": [
+                "sha256:688268840f923255932154a52bdd40ffac467de4126835c43846e9e6f112844c"
+            ],
+            "version": "==2019.4.13"
         },
         "googletrans": {
             "hashes": [
@@ -110,6 +117,19 @@
             "index": "pypi",
             "version": "==0.25.3"
         },
+        "post": {
+            "hashes": [
+                "sha256:8fd57fb16f2c90ef4a76b04b8701c4db8ded170e53fac9514b5ea0272da5d36f"
+            ],
+            "version": "==2019.4.13"
+        },
+        "public": {
+            "hashes": [
+                "sha256:291e46e33cae07e475b969dbbc0596aacee0d1d184928cb5a614dbd907ae5318",
+                "sha256:e1436a8a99693a9849dfe40b9158f3837b7c309c163b2d3f5b8e9fce23876db1"
+            ],
+            "version": "==2019.4.13"
+        },
         "pytest-runner": {
             "hashes": [
                 "sha256:5534b08b133ef9a5e2c22c7886a8f8508c95bb0b0bdc6cc13214f269c3c70d51",
@@ -130,6 +150,19 @@
                 "sha256:b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be"
             ],
             "version": "==2019.3"
+        },
+        "query-string": {
+            "hashes": [
+                "sha256:bb24e4f58849ef6f8219b2446c2bed076d86c97720ae9c3ae918625807394ca8"
+            ],
+            "version": "==2019.4.13"
+        },
+        "request": {
+            "hashes": [
+                "sha256:6297b53c29a4928f7735034df2ab60aa1c7c044df989f605a81b7dc2d3713732"
+            ],
+            "index": "pypi",
+            "version": "==2019.4.13"
         },
         "requests": {
             "hashes": [

@@ -12,6 +12,7 @@ pandas = "*"
 arxiv = "*"
 requests = "*"
 googletrans = "*"
+request = "*"
 
 [requires]
 python_version = "3.7"
