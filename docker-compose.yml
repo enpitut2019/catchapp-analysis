@@ -4,3 +4,5 @@ services:
     image: sudame/pdfanalyzer
     volumes:
       - .:/app/python_scripts
+    environment:
+      - PIPENV_VENV_IN_PROJECT=1
