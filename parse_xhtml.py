@@ -40,16 +40,17 @@ def parse_figure(root, figure_type):
     return result
 
 
+# arxivの使い方は宋さんやOEIさんあたりのを参考に脳死で書いた
 paper_list = arxiv.query(query='au:"Henggang Cui"')
 
 for paper in paper_list:
+    # PDFファイルを保存
     response = urllib.request.urlretrieve(
         paper['pdf_url'], 'paper.pdf',)
 
-    proc = subprocess.run(
-        'php /app/pdfanalyzer/pdfanalyze.php --with-image --model /app/pdfanalyzer/paper.model -c generate_xhtml ' + os.getcwd() + '/paper.pdf', shell=True)
-
-    res = http.post('http://host.docker.internal:3000/papers/create', data={
+    # Paperの基本データをRailsにPOSTする
+    paper_create_url = 'http://host.docker.internal:3000/papers/create'
+    res = http.post(paper_create_url, data={
         "abstract": paper["summary"],
         "title": paper["title"],
         "url": paper["arxiv_url"],
@@ -63,14 +64,21 @@ for paper in paper_list:
         "authors": paper["authors"],
     })
 
+    # POSTのレスポンスから保存されたPaperのRails上でのIDを取得する
     paper_id = res.json()['id']
 
-    tree = ET.parse("./xhtml/paper.xhtml")
-    root = tree.getroot()
+    # PDFNLTを用いて解析
+    # 解析結果は xhtml ディレクトリに保存される
+    proc = subprocess.run(
+        'php /app/pdfanalyzer/pdfanalyze.php --with-image --model /app/pdfanalyzer/paper.model -c generate_xhtml ' + os.getcwd() + '/paper.pdf', shell=True)
 
-    figures = parse_figure(root, 'Figure')['figures']
+    # PDFNLTで生成されたxhtmlファイルを解析する
 
+    # 画像についての解析
+    figures = parse_figure(
+        ET.parse("./xhtml/paper.xhtml").getroot(), 'Figure')['figures']
     for figure in figures:
+        # 画像のアップロード
         figure_path = './xhtml/' + figure['src']
         figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
         files = {'figure': open(figure_path, 'rb')}
@@ -79,4 +87,15 @@ for paper in paper_list:
             'paper_id': paper_id,
         })
 
-    # print(result)
+    # テーブルについての解析
+    figures = parse_figure(
+        ET.parse("./xhtml/paper.xhtml").getroot(), 'Table')['figures']
+    for figure in figures:
+        # テーブルの画像のアップロード
+        figure_path = './xhtml/' + figure['src']
+        figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
+        files = {'figure': open(figure_path, 'rb')}
+        r = http.post(figure_upload_url, files=files, data={
+            'explanation': figure['caption'],
+            'paper_id': paper_id,
+        })
