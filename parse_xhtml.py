@@ -6,6 +6,8 @@ import subprocess
 import os
 import json
 import requests as http
+from googletrans import Translator
+translator = Translator()
 
 ### Figure の処理 ###
 
@@ -41,7 +43,9 @@ def parse_figure(root, figure_type):
 
 
 # arxivの使い方は宋さんやOEIさんあたりのを参考に脳死で書いた
-paper_list = arxiv.query(query='au:"Henggang Cui"')
+paper_list = arxiv.query(query='cat:"cs.AI"', max_results=30)
+
+print(len(paper_list))
 
 for paper in paper_list:
     # PDFファイルを保存
@@ -49,20 +53,25 @@ for paper in paper_list:
         paper['pdf_url'], 'paper.pdf',)
 
     # Paperの基本データをRailsにPOSTする
-    paper_create_url = 'http://host.docker.internal:3000/papers/create'
-    res = http.post(paper_create_url, data={
-        "abstract": paper["summary"],
-        "title": paper["title"],
+    # paper_create_url = 'http://host.docker.internal:3000/papers/create'
+    paper_create_url = 'https://siscorn-checkapp.herokuapp.com/papers/create'
+    summary = paper["summary"].replace('\n', ' ')
+    title = paper["title"].replace('\n', ' ')
+    data = {
+        "abstract": summary,
+        "title": title,
         "url": paper["arxiv_url"],
-        "abstract_ja": "",
+        "abstract_ja": translator.translate(summary, src='en', dest='ja').text,
         "pdf_url": paper["pdf_url"],
         "published_at": paper["published"],
         "journal": "",
-        "title_ja": "",
+        "title_ja": translator.translate(title, src='en', dest='ja').text,
         "cite_count": "",
         "cited_count": "",
-        "authors": paper["authors"],
-    })
+        "authors": ','.join(paper["authors"]),
+    }
+    print(data)
+    res = http.post(paper_create_url, data=data)
 
     # POSTのレスポンスから保存されたPaperのRails上でのIDを取得する
     paper_id = res.json()['id']
@@ -80,7 +89,8 @@ for paper in paper_list:
     for figure in figures:
         # 画像のアップロード
         figure_path = './xhtml/' + figure['src']
-        figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
+        # figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
+        figure_upload_url = 'https://siscorn-checkapp.herokuapp.com/papers/upload'
         files = {'figure': open(figure_path, 'rb')}
         r = http.post(figure_upload_url, files=files, data={
             'explanation': figure['caption'],
@@ -93,7 +103,8 @@ for paper in paper_list:
     for figure in figures:
         # テーブルの画像のアップロード
         figure_path = './xhtml/' + figure['src']
-        figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
+        # figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
+        figure_upload_url = 'https://siscorn-checkapp.herokuapp.com/papers/upload'
         files = {'figure': open(figure_path, 'rb')}
         r = http.post(figure_upload_url, files=files, data={
             'explanation': figure['caption'],
