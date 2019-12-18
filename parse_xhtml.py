@@ -7,6 +7,7 @@ import os
 import json
 import requests as http
 from googletrans import Translator
+from bottle import route, run, request, HTTPResponse
 translator = Translator()
 
 ### Figure の処理 ###
@@ -42,39 +43,11 @@ def parse_figure(root, figure_type):
     return result
 
 
-# arxivの使い方は宋さんやOEIさんあたりのを参考に脳死で書いた
-paper_list = arxiv.query(query='cat:"cs.AI"', max_results=30)
+def parse_xhtml(paper_id, paper_pdf_url):
+    # arxivの使い方は宋さんやOEIさんあたりのを参考に脳死で書いた
+    figure_upload_url = 'https://siscorn-checkapp.herokuapp.com/papers/upload'
 
-print(len(paper_list))
-
-for paper in paper_list:
-    # PDFファイルを保存
-    response = urllib.request.urlretrieve(
-        paper['pdf_url'], 'paper.pdf',)
-
-    # Paperの基本データをRailsにPOSTする
-    # paper_create_url = 'http://host.docker.internal:3000/papers/create'
-    paper_create_url = 'https://siscorn-checkapp.herokuapp.com/papers/create'
-    summary = paper["summary"].replace('\n', ' ')
-    title = paper["title"].replace('\n', ' ')
-    data = {
-        "abstract": summary,
-        "title": title,
-        "url": paper["arxiv_url"],
-        "abstract_ja": translator.translate(summary, src='en', dest='ja').text,
-        "pdf_url": paper["pdf_url"],
-        "published_at": paper["published"],
-        "journal": "",
-        "title_ja": translator.translate(title, src='en', dest='ja').text,
-        "cite_count": "",
-        "cited_count": "",
-        "authors": ','.join(paper["authors"]),
-    }
-    print(data)
-    res = http.post(paper_create_url, data=data)
-
-    # POSTのレスポンスから保存されたPaperのRails上でのIDを取得する
-    paper_id = res.json()['id']
+    response = urllib.request.urlretrieve(paper_pdf_url, 'paper.pdf',)
 
     # PDFNLTを用いて解析
     # 解析結果は xhtml ディレクトリに保存される
@@ -84,29 +57,53 @@ for paper in paper_list:
     # PDFNLTで生成されたxhtmlファイルを解析する
 
     # 画像についての解析
-    figures = parse_figure(
-        ET.parse("./xhtml/paper.xhtml").getroot(), 'Figure')['figures']
-    for figure in figures:
-        # 画像のアップロード
-        figure_path = './xhtml/' + figure['src']
-        # figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
-        figure_upload_url = 'https://siscorn-checkapp.herokuapp.com/papers/upload'
-        files = {'figure': open(figure_path, 'rb')}
-        r = http.post(figure_upload_url, files=files, data={
-            'explanation': figure['caption'],
-            'paper_id': paper_id,
-        })
+    figures_raw = parse_figure(
+        ET.parse("./xhtml/paper.xhtml").getroot(), 'Figure')
+    if 'figures' in figures_raw:
+        figures = figures_raw['figures']
+        for figure in figures:
+            # 画像のアップロード
+            figure_path = './xhtml/' + figure['src']
+            files = {'figure': open(figure_path, 'rb')}
+            r = http.post(figure_upload_url, files=files, data={
+                'explanation': figure['caption'],
+                'paper_id': paper_id,
+            })
 
     # テーブルについての解析
-    figures = parse_figure(
-        ET.parse("./xhtml/paper.xhtml").getroot(), 'Table')['figures']
-    for figure in figures:
-        # テーブルの画像のアップロード
-        figure_path = './xhtml/' + figure['src']
-        # figure_upload_url = 'http://host.docker.internal:3000/papers/upload'
-        figure_upload_url = 'https://siscorn-checkapp.herokuapp.com/papers/upload'
-        files = {'figure': open(figure_path, 'rb')}
-        r = http.post(figure_upload_url, files=files, data={
-            'explanation': figure['caption'],
-            'paper_id': paper_id,
-        })
+    figures_raw = parse_figure(
+        ET.parse("./xhtml/paper.xhtml").getroot(), 'Table')
+    if 'figures' in figures_raw:
+        figures = figures_raw['figures']
+        for figure in figures:
+            # テーブルの画像のアップロード
+            figure_path = './xhtml/' + figure['src']
+            files = {'figure': open(figure_path, 'rb')}
+            r = http.post(figure_upload_url, files=files, data={
+                'explanation': figure['caption'],
+                'paper_id': paper_id,
+            })
+
+
+def server():
+    @route('/')
+    def hello():  # pylint: disable=unused-variable
+        paper_id = str(request.params.paper_id)  # pylint: disable=no-member
+        paper_pdf_url = str(
+            request.params.paper_pdf_url)  # pylint: disable=no-member
+
+        response = HTTPResponse(status=200)
+        if (not paper_id) or (not paper_pdf_url):
+            response.status = 400
+        response.body = {
+            'status': response.status
+        }
+        parse_xhtml(paper_id, paper_pdf_url)
+
+        return response
+
+    run(host='localhost', port=8080, debug=True)
+
+
+# launch server
+server()

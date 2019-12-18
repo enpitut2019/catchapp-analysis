@@ -6,3 +6,5 @@ services:
       - .:/app/python_scripts
     environment:
       - PIPENV_VENV_IN_PROJECT=1
+    ports:
+      - "8080:8080"

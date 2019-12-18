@@ -1,0 +1,8 @@
+setup:
+  config:
+    PIPENV_VENV_IN_PROJECT: 1
+build:
+  docker:
+    analysis: Dockerfile
+run:
+  analysis: pipenv run python parse_xhtml

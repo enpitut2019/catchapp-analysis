@@ -13,6 +13,7 @@ arxiv = "*"
 requests = "*"
 googletrans = "*"
 request = "*"
+bottle = "*"
 
 [requires]
 python_version = "3.7"
