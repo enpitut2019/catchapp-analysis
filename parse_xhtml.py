@@ -8,6 +8,8 @@ import json
 import requests as http
 from googletrans import Translator
 from bottle import route, run, request, HTTPResponse
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 translator = Translator()
 
 ### Figure の処理 ###
