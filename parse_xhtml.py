@@ -101,8 +101,9 @@ def server():
         parse_xhtml(paper_id, paper_pdf_url)
 
         return response
-
-    run(host='localhost', port=8080, debug=True)
+    
+    port = os.getenv('PORT', 8080)
+    run(host='0.0.0.0', port=port, debug=True)
 
 
 # launch server
