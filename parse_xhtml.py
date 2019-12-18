@@ -95,11 +95,11 @@ def server():
         response = HTTPResponse(status=200)
         if (not paper_id) or (not paper_pdf_url):
             response.status = 400
+        else:
+            parse_xhtml(paper_id, paper_pdf_url)
         response.body = {
             'status': response.status
         }
-        parse_xhtml(paper_id, paper_pdf_url)
-
         return response
     
     port = os.getenv('PORT', 8080)
