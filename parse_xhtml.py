@@ -45,7 +45,7 @@ def parse_figure(root, figure_type):
 
 def parse_xhtml(paper_id, paper_pdf_url):
     # arxivの使い方は宋さんやOEIさんあたりのを参考に脳死で書いた
-    figure_upload_url = 'https://siscorn-checkapp.herokuapp.com/papers/upload'
+    figure_upload_url = 'https://catchapp.sudame.net/papers/upload'
 
     response = urllib.request.urlretrieve(paper_pdf_url, 'paper.pdf',)
 
